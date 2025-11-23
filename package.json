@@ -1,0 +1,18 @@
+{
+  "name": "synthar-site",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Synthar.cc",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo \"No build step required\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.80.0",
+    "couchbase": "^4.3.0",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

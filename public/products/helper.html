@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthar Helper - AI-Powered Valorant Assistant | Synthar.cc</title>
+    <meta name="description" content="Synthar Helper V1 - AI-powered Valorant assistant with insta-lock, spike timer, and API integration. Lifetime access for $9.99.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="/favicon.ico" alt="Synthar Logo" class="favicon" />
+                <span class="logo-text">Synthar.cc</span>
+            </div>
+            <div class="nav-links">
+                <a href='/'>Home</a>
+                <a href='/tos'>Terms</a>
+                <a href='/dashboard/login'>Dash</a>
+                <a href="https://discord.gg/synthar" target="_blank" class="download-nav-btn">
+                    <span class="nav-btn-text">Discord</span>
+                    <i class="fab fa-discord nav-btn-icon"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="product-container">
+        <div class="product-layout">
+            <div class="product-content">
+                <div class="back-to-products">
+                    <a href="/#buy" class="back-button">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back To Products
+                    </a>
+                </div>
+                <h1 class="product-title">Synthar Helper V1</h1>
+
+                <div class="pricing-options">
+                    <label class="price-option">
+                        <input type="radio" name="pricing" value="https://mrisolutions.ca/pages/checkout?p=synthar-helper-v1-lifetime-23500" checked>
+                        <div class="price-info">
+                            <div class="price-duration">Lifetime</div>
+                            <div class="price-description">Infinite</div>
+                        </div>
+                        <div class="price-amount">$9.99</div>
+                    </label>
+                </div>
+
+                <div class="purchase-section">
+                    <div class="tos-checkbox">
+                        <input type="checkbox" id="tos-accept">
+                        <label for="tos-accept">I accept the <a href='../tos' target='_blank'>Terms of Service</a> (No Refunds)</label>
+                    </div>
+                    <button class="buy-button" id="buy-btn">
+                        <span class="button-content">
+                            <span class="button-text">Checkout</span>
+                            <span class="payment-logos">
+                                <!-- Stripe Logo -->
+                                <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                                    <rect x="2" y="9" width="20" height="3" fill="currentColor"/>
+                                    <rect x="5" y="14" width="3" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="10" y="14" width="6" height="1" rx="0.5" fill="currentColor"/>
+                                </svg>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <!-- Litecoin (LTC) -->
+                                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                      <path d="M15.5 7h-2l-1.2 4.5h2.5l-.4 1.5h-2.5l-.6 2.2h6l-.4 1.5h-8l.8-3h-1.8l.4-1.5h1.8L11.9 7h3.6l-.4 1.5z" fill="currentColor"/>
+                                    </svg>
+                                  
+                                    <!-- Bitcoin (BTC) -->
+                                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                      <path d="M13.5 7.5h-3v9h3a2.5 2.5 0 0 0 0-5H13a2.5 2.5 0 0 0 0-5zM10.5 12h3.2a1.5 1.5 0 0 1 0 3h-3.2V12zm0-1.5V9h3.2a1.5 1.5 0 0 1 0 3h-3.2z" fill="currentColor"/>
+                                    </svg>
+                                  
+                                    <!-- Ethereum (ETH) -->
+                                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                      <path d="M12 5l4.5 7-4.5 2.5L7.5 12 12 5zm0 14l-4.5-6 4.5 2.5L16.5 13 12 19z" fill="currentColor"/>
+                                    </svg>
+                                  </div>
+                                                                  
+                            </span>
+                        </span>
+                    </button>
+                    <div class="error-message" id="error-message"></div>
+                </div>
+            </div>
+
+            <!-- Using scrollable gallery matching advanced -->
+            <div class="image-gallery">
+                <img src="../assets/images/helper1.png" alt="Synthar Helper Interface">
+                <img src="../assets/images/helper2.png" alt="Synthar Helper Features">
+                
+                <!-- Description Section -->
+                <div class="product-details">
+                    <div class="details-section">
+                        <h2>Features</h2>
+                        <ul>
+                            <li>Instalock</li>
+                            <li>Spike Timer</li>
+                            <li>Undetected</li>
+                            <li>Light Weight</li>
+                            <li>AI Helper (In Dev As Of 10/3/25)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h2>Requirements</h2>
+                        <ul>
+                            <li>Windows 10/11 (64-bit)</li>
+                            <li>Decent Internet Connection</li>
+                            <li>Administrator Privileges</li>
+                            <li>Valorant Installed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sticky Checkout Button for Mobile/Tablet -->
+    <div class="sticky-checkout" id="sticky-checkout">
+        <div class="sticky-checkout-info">
+            <span id="sticky-product-name">Lifetime Plan</span>
+            <span class="sticky-checkout-price" id="sticky-price">$14.99</span>
+        </div>
+        <button class="buy-button" id="sticky-buy-btn">
+            <span class="button-content">
+                <span class="button-text">Checkout</span>
+                <span class="payment-logos">
+                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                        <rect x="2" y="9" width="20" height="3" fill="currentColor"/>
+                        <rect x="5" y="14" width="3" height="2" rx="0.5" fill="currentColor"/>
+                        <rect x="10" y="14" width="6" height="1" rx="0.5" fill="currentColor"/>
+                    </svg>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M15.5 7h-2l-1.2 4.5h2.5l-.4 1.5h-2.5l-.6 2.2h6l-.4 1.5h-8l.8-3h-1.8l.4-1.5h1.8L11.9 7h3.6l-.4 1.5z" fill="currentColor"/>
+                        </svg>
+                        <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M13.5 7.5h-3v9h3a2.5 2.5 0 0 0 0-5H13a2.5 2.5 0 0 0 0-5zM10.5 12h3.2a1.5 1.5 0 0 1 0 3h-3.2V12zm0-1.5V9h3.2a1.5 1.5 0 0 1 0 3h-3.2z" fill="currentColor"/>
+                        </svg>
+                        <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M12 5l4.5 7-4.5 2.5L7.5 12 12 5zm0 14l-4.5-6 4.5 2.5L16.5 13 12 19z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </span>
+            </span>
+        </button>
+    </div>
+    
+    <script>
+        const buyButton = document.getElementById('buy-btn');
+        const stickyBuyButton = document.getElementById('sticky-buy-btn');
+        const tosCheckbox = document.getElementById('tos-accept');
+        const errorMessage = document.getElementById('error-message');
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hide');
+            errorMessage.classList.add('show');
+            
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+                errorMessage.classList.add('hide');
+            }, 4000);
+        }
+
+        function handleCheckout() {
+            const selectedOption = document.querySelector('input[name="pricing"]:checked');
+            
+            if (!tosCheckbox.checked) {
+                showError('Please accept the Terms of Service before purchasing.');
+                tosCheckbox.focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            // Redirect directly to payment URL
+            window.location.href = selectedOption.value;
+        }
+        
+        buyButton.addEventListener('click', handleCheckout);
+        stickyBuyButton.addEventListener('click', handleCheckout);
+
+        // Close modal when clicking outside
+        document.getElementById('payment-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+
+        // Scroll indicator fade out logic
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        const productDetails = document.querySelector('.product-details');
+
+        if (scrollIndicator && productDetails) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        scrollIndicator.classList.add('hidden');
+                    } else {
+                        scrollIndicator.classList.remove('hidden');
+                    }
+                });
+            }, {
+                threshold: 0.9
+            });
+
+            observer.observe(productDetails);
+        }
+
+        // Fade-in animation for images and description
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Use setTimeout to ensure DOM is fully rendered
+        setTimeout(() => {
+            // Observe all images in the gallery
+            const galleryImages = document.querySelectorAll('.image-gallery img');
+            galleryImages.forEach(img => {
+                // Immediately show images that are already in viewport
+                const rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    img.classList.add('fade-in');
+                }
+                fadeInObserver.observe(img);
+            });
+
+            // Immediately show product details and observe
+            if (productDetails) {
+                productDetails.classList.add('fade-in');
+                fadeInObserver.observe(productDetails);
+            }
+        }, 100);
+    </script>
+    
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal-content">
+            <h3>Confirm Purchase</h3>
+            <p>You will be redirected to our secure payment processor to complete your purchase.</p>
+            <div class="modal-buttons">
+                <button class="modal-button cancel" onclick="document.getElementById('payment-modal').classList.remove('show')">Cancel</button>
+                <button class="modal-button confirm" id="modal-confirm-btn">Continue to Payment</button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: #1a1a2e;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-content h3 {
+            margin-top: 0;
+            color: #e6e6e6;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-content p {
+            color: #b3b3b3;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .modal-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-button.cancel {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+        
+        .modal-button.cancel:hover {
+            background: #4a5568;
+        }
+        
+        .modal-button.confirm {
+            background: #4f46e5;
+            color: white;
+        }
+        
+        .modal-button.confirm:hover {
+            background: #4338ca;
+        }
+    </style>
+</body>
+
+<!-- Mirrored from synthar.cc/products/helper by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Oct 2025 02:13:23 GMT -->
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Synthar.cc</title>
+    <meta name="description" content="Login to your Synthar account">
+    <link rel="stylesheet" href="styles/log.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="split-container">
+            <div class="left-panel">
+                <div class="brand-header">
+                    <img src="/favicon.ico" alt="Synthar" class="brand-logo" />
+                    <span class="brand-name">Synthar.cc</span>
+                </div>
+
+                <div class="form-container">
+                    <h1 class="form-title">Welcome Back</h1>
+                    <p class="form-subtitle">Login to your account</p>
+
+                    <form id="login-form">
+                        <div id="login-message" class="message hidden"></div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="login-email">Email</label>
+                            <input type="email" id="login-email" class="input-field" placeholder="you@example.com" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="login-password">Password</label>
+                            <div class="password-toggle">
+                                <input type="password" id="login-password" class="input-field" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="login-btn" class="submit-button">Login</button>
+
+                        <p class="footer-text">
+                            Don't have an account? <a href="/dashboard/signup">Sign Up Now</a>
+                        </p>
+                    </form>
+
+                    <p class="footer-text" style="margin-top: 40px; font-size: 0.75rem; line-height: 1.6;">
+                        By continuing, you agree to Synthar's <a href="/tos">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <a href="/" class="doc-link">Go Home</a>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "been using it for a month straight pretty solid tb, it works good, ofc its not perfect but just dont suck!" 
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar"></div>
+                        <span class="author-name">@etzn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/assets/scripts/script.js"></script>
+</body>
+</html>

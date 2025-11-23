@@ -1,0 +1,580 @@
+/* Dashboard & Login Mobile Responsive Styles */
+
+/* Tablet breakpoint */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .chat-section {
+        height: 400px;
+        min-height: 400px;
+    }
+
+    .dashboard-container {
+        padding: 120px 30px 60px;
+    }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+    /* Login Page Navbar */
+    .navbar {
+        width: calc(100vw - 32px) !important;
+        top: 12px;
+    }
+
+    .navbar.scrolled {
+        width: calc(100vw - 32px) !important;
+        top: 12px;
+    }
+
+    .nav-container {
+        padding: 0 16px !important;
+    }
+
+    .navbar.scrolled .nav-container {
+        padding: 0 12px !important;
+    }
+
+    .nav-links {
+        gap: 12px !important;
+    }
+
+    .navbar.scrolled .nav-links {
+        gap: 10px !important;
+    }
+
+    .nav-links a {
+        font-size: 13px !important;
+    }
+
+    .navbar.scrolled .nav-links a {
+        font-size: 12px !important;
+    }
+
+    .logo-text {
+        font-size: 16px !important;
+    }
+
+    .navbar.scrolled .logo-text {
+        font-size: 14px !important;
+    }
+
+    .favicon {
+        height: 24px !important;
+        width: 24px !important;
+    }
+
+    .navbar.scrolled .favicon {
+        height: 20px !important;
+        width: 20px !important;
+    }
+
+    /* Login/Signup Container */
+    body {
+        padding: 16px;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .auth-container {
+        margin-top: 100px;
+        margin-bottom: 40px;
+        max-width: 100%;
+    }
+
+    .auth-card {
+        padding: 32px 24px;
+        border-radius: 20px;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .auth-subtitle {
+        font-size: 15px;
+        margin-bottom: 24px;
+    }
+
+    .auth-tabs {
+        margin-bottom: 24px;
+        gap: 8px;
+    }
+
+    .auth-tab {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .form-input {
+        padding: 12px 14px;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+
+    .submit-btn {
+        padding: 14px;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .message {
+        padding: 10px 14px;
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+        padding: 110px 16px 40px;
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+
+    .user-name {
+        font-size: 18px;
+    }
+
+    .logout-btn {
+        width: 100%;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Sections */
+    .section {
+        padding: 20px 16px;
+        border-radius: 14px;
+    }
+
+    .section + .section {
+        margin-top: 16px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+
+    /* Verify Form */
+    .verify-form {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .verify-input {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+
+    .verify-btn {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    /* Message */
+    .message {
+        padding: 10px 12px;
+        font-size: 12px;
+        margin-top: 10px;
+    }
+
+    /* Discord Verify Banner */
+    .discord-verify-banner {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .discord-verify-banner i {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .discord-verify-banner h3 {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .discord-verify-banner p {
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .discord-btn {
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+
+    /* License Items */
+    .licenses-container {
+        gap: 12px;
+    }
+
+    .license-item {
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .license-type {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+
+    .license-key {
+        font-size: 12px;
+        padding: 8px 10px;
+        margin: 8px 0;
+    }
+
+    .action-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    /* Chat Section */
+    .chat-section {
+        height: 450px;
+        min-height: 400px;
+    }
+
+    .chat-messages {
+        padding: 12px;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .chat-msg {
+        gap: 8px;
+    }
+
+    .chat-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .chat-body {
+        padding: 8px 10px;
+        max-width: 80%;
+    }
+
+    .chat-header {
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+
+    .chat-time {
+        font-size: 9px;
+    }
+
+    .chat-content {
+        font-size: 12px;
+    }
+
+    .chat-input-area {
+        gap: 8px;
+    }
+
+    .chat-input {
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+
+    .chat-send-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 24px 16px;
+    }
+
+    .empty-state i {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .empty-state h3 {
+        font-size: 16px;
+    }
+
+    .empty-state p {
+        font-size: 13px;
+    }
+
+    /* Forum Link Section */
+    .section[style*="text-align: center"] {
+        padding: 24px 16px !important;
+    }
+
+    .section[style*="text-align: center"] h2 {
+        font-size: 18px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .section[style*="text-align: center"] p {
+        font-size: 13px !important;
+        margin-bottom: 14px !important;
+        padding: 0 8px;
+    }
+
+    .section[style*="text-align: center"] a {
+        padding: 10px 24px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    /* Login Page */
+    .auth-card {
+        padding: 28px 20px;
+    }
+
+    .auth-title {
+        font-size: 1.75rem;
+    }
+
+    .auth-subtitle {
+        font-size: 14px;
+    }
+
+    .auth-tab {
+        font-size: 14px;
+        padding: 9px;
+    }
+
+    .form-input {
+        font-size: 14px;
+    }
+
+    .submit-btn {
+        font-size: 15px;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+        padding: 100px 12px 30px;
+    }
+
+    .dashboard-header {
+        padding: 16px;
+    }
+
+    .user-name {
+        font-size: 16px;
+    }
+
+    .section {
+        padding: 16px 14px;
+    }
+
+    .section-title {
+        font-size: 17px;
+    }
+
+    .verify-input,
+    .verify-btn {
+        font-size: 13px;
+    }
+
+    .license-type {
+        font-size: 11px;
+    }
+
+    .license-key {
+        font-size: 11px;
+    }
+
+    .action-btn {
+        font-size: 11px;
+    }
+
+    .chat-section {
+        height: 400px;
+        min-height: 350px;
+    }
+
+    .chat-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+    }
+
+    .chat-body {
+        max-width: 85%;
+    }
+
+    .chat-header {
+        font-size: 10px;
+    }
+
+    .chat-content {
+        font-size: 11px;
+    }
+
+    .chat-input {
+        font-size: 12px;
+    }
+
+    .chat-send-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .nav-links a {
+        font-size: 12px !important;
+    }
+
+    .navbar.scrolled .nav-links a {
+        font-size: 11px !important;
+    }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        overflow-y: auto;
+        height: auto;
+    }
+
+    .auth-container {
+        margin-top: 120px;
+    }
+
+    .chat-section {
+        height: 350px;
+        min-height: 300px;
+    }
+}
+
+/* Fix overflow issues on mobile */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .dashboard-container,
+    .auth-container,
+    .section,
+    .license-item {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Prevent text overflow */
+    .license-key,
+    .chat-content,
+    .user-name {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* Ensure images don't overflow */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Fix button overflow */
+    button {
+        max-width: 100%;
+    }
+
+    /* Loading overlay mobile fix */
+    .loading-overlay {
+        padding: 20px;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+    button,
+    .auth-tab,
+    .license-key,
+    .action-btn,
+    .chat-send-btn {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-input,
+    .verify-input,
+    .chat-input {
+        min-height: 44px;
+    }
+}
+
+/* Improve readability on small screens */
+@media (max-width: 480px) {
+    .discord-verify-banner h3 {
+        font-size: 14px;
+    }
+
+    .discord-verify-banner p {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .empty-state i {
+        font-size: 28px;
+    }
+
+    .empty-state h3 {
+        font-size: 15px;
+    }
+
+    .empty-state p {
+        font-size: 12px;
+    }
+}

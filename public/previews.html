@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<head>
+    <title>Synthar.cc - Best Valorant TriggerBot 2025 | Color Based, No Driver, Undetected</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="description" content="Synthar.cc - The #1 Valorant TriggerBot with AI detection bypass. Color-based, no driver required, works with Overwatch, Rainbow Six Siege, Marvel Rivals. Undetected and safe. Starting at $9.99." />
+    <meta name="author" content="Synthar" />
+    <meta name="keywords" content="valorant triggerbot, valorant cheat, valorant hack, color based triggerbot, undetected valorant cheat, valorant aimbot, no driver valorant cheat, synthar, valorant ai bypass, overwatch triggerbot, rainbow six siege cheat, marvel rivals cheat, valorant color bot, safe valorant cheat, valorant spoofer, hwid spoofer valorant" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Synthar.cc - Best Valorant TriggerBot 2025 | Undetected & Safe" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="index" />
+    <meta property="og:image" content="assets/og-image" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Synthar Valorant TriggerBot" />
+    <meta property="og:description" content="The most advanced Valorant TriggerBot with AI detection bypass. Color-based, no driver, undetected. Works with multiple games." />
+    <meta property="og:site_name" content="Synthar" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Synthar.cc - Best Valorant TriggerBot 2025" />
+    <meta name="twitter:description" content="Undetected Valorant TriggerBot with AI bypass. Color-based, no driver required. Starting at $9.99." />
+    <meta name="twitter:image" content="assets/og-image" />
+    <meta name="twitter:site" content="@synthar" />
+    <link rel="canonical" href="index" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .scroll-indicator {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            border-left: 2px solid #000;
+            border-bottom: 2px solid #000;
+            transform: rotate(-45deg);
+        }
+
+        .scroll-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #000;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        .hero {
+            position: relative;
+        }
+
+        /* Initial navbar state - starts as scrolled */
+        .navbar.initial {
+            top: 15px;
+            width: 400px;
+            padding: 8px 0;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+            border: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar.initial .nav-container {
+            padding: 0 10px;
+            padding-left: 20px;
+        }
+
+        .navbar.initial .favicon {
+            height: 24px;
+            width: 24px;
+        }
+
+        .navbar.initial .logo-text {
+            font-size: 16px;
+        }
+
+        .navbar.initial .nav-links {
+            gap: 20px;
+        }
+
+        .navbar.initial .nav-links a {
+            font-size: 14px;
+        }
+
+        .navbar.initial .nav-links a.download-nav-btn {
+            background: linear-gradient(135deg, #1e3a8a, #000000);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            section[style*="grid-template-columns: 1fr 1fr"] > div {
+                grid-template-columns: 1fr !important;
+                gap: 40px !important;
+            }
+        }
+
+        .mobile-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .mobile-warning.active {
+            display: flex;
+        }
+
+        .mobile-warning h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .mobile-warning-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .video-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f5f7;
+            z-index: 10;
+        }
+
+        .video-loader.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-container video.loaded {
+            opacity: 1;
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Synthar Valorant TriggerBot",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Windows",
+      "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "9.99",
+        "highPrice": "29.99",
+        "priceCurrency": "USD"
+      },
+      "description": "Advanced Valorant TriggerBot with AI detection bypass, color-based technology, no driver required. Undetected and safe.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1254"
+      }
+    }
+    </script>
+</head>
+<body>
+    <div class="mobile-warning" id="mobileWarning">
+        <div class="mobile-warning-icon">🥀</div>
+        <h1>Mobile Is Not Supported Here</h1>
+    </div>
+    <nav class="navbar initial" id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="favicon.ico" alt="Synthar Logo" class="favicon" />
+                <span class="logo-text">Synthar.cc</span>
+            </div>
+            <div class="nav-links">
+                <a href='/'>Home</a>
+                <a href='/tos'>Terms</a>
+                <a href='dashboard/login'>Dash</a>
+                <a href="https://discord.gg/synthar" target="_blank" class="download-nav-btn">Discord</a>
+            </div>
+        </div>
+    </nav>
+    <section style="padding: 80px 20px;"></section>
+
+
+
+    <section style="padding: 80px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <div class="video-container">
+                <div class="video-loader">
+                    <div class="spinner"></div>
+                </div>
+                <video class="preview-video" autoplay loop muted playsinline>
+                    <source src="assets/videos/7.mp4" type="video/mp4">
+                    Failed To Load Video
+                </video>
+            </div>
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #000; font-family: 'DM Sans', sans-serif;">Synthar <span style="text-decoration: underline; font-style: italic;">Standard UI</span></h2>
+                <p style="color: #6e6e73; font-size: 1.125rem; line-height: 1.8; margin-bottom: 20px;">
+                    Experience the <span style="text-decoration: underline; font-weight: bold;">Sleek</span> and <span style="text-decoration: underline; font-weight: bold;">Intuitive</span> user interface of Synthar Standard. 
+                    Designed for <span style="text-decoration: underline; font-weight: bold;">Maximum Efficiency</span> and ease of use, giving you full control with a clean, modern design.
+                </p>
+                <a href="/products/standard" style="display: inline-block; background: #000; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif;">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding: 80px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #000; font-family: 'DM Sans', sans-serif;">Synthar <span style="text-decoration: underline; font-style: italic;">Advanced UI</span></h2>
+                <p style="color: #6e6e73; font-size: 1.125rem; line-height: 1.8; margin-bottom: 20px;">
+                    Unlock the <span style="text-decoration: underline; font-weight: bold;">Premium Experience</span> with Synthar Advanced's sophisticated interface. 
+                    Featuring <span style="text-decoration: underline; font-weight: bold;">Advanced Controls</span> and <span style="text-decoration: underline; font-weight: bold;">Customization Options</span> for power users who demand the best.
+                </p>
+                <a href="/products/advanced" style="display: inline-block; background: #000; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif;">
+                    Learn More
+                </a>
+            </div>
+            <div class="video-container">
+                <div class="video-loader">
+                    <div class="spinner"></div>
+                </div>
+                <video class="preview-video" autoplay loop muted playsinline>
+                    <source src="assets/videos/4.mp4" type="video/mp4">
+                    Failed To Load Video
+                </video>
+            </div>
+        </div>
+    </section>
+    <section style="padding: 80px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <div class="video-container">
+                <div class="video-loader">
+                    <div class="spinner"></div>
+                </div>
+                <video class="preview-video" autoplay loop muted playsinline>
+                    <source src="assets/videos/3.mp4" type="video/mp4">
+                    Failed To Load Video
+                </video>
+            </div>
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #000; font-family: 'DM Sans', sans-serif;">Synthar <span style="text-decoration: underline; font-style: italic;">Advanced</span></h2>
+                <p style="color: #6e6e73; font-size: 1.125rem; line-height: 1.8; margin-bottom: 20px;">
+                    A showcase of Synthar Advanced's incredible features, in a <span style="text-decoration: underline; font-weight: bold;">Cleanly</span> edited video, which <span style="text-decoration: underline; font-weight: bold;">Emphasizes</span> the <span style="text-decoration: underline; font-weight: bold;">Power And Safety</span> of Synthar Advanced
+                </p>
+                <a href="/products/advanced" style="display: inline-block; background: #000; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif;">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding: 80px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #000; font-family: 'DM Sans', sans-serif;">Synthar <span style="text-decoration: underline; font-style: italic;">Standard</span></h2>
+                <p style="color: #6e6e73; font-size: 1.125rem; line-height: 1.8; margin-bottom: 20px;">
+                    Here you can see the Affordability, Power, and Safety of <span style="text-decoration: underline; font-weight: bold;">Synthar Standard.</span>
+                    Our <b>Fully External</b> methods, <b>mask</b> it completely from Vanguards view, unless a <b>Riot</b> employee <b>MANUALLY</b> bans you
+                </p>
+                <a href="/products/standard" style="display: inline-block; background: #000; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif;">
+                    Learn More
+                </a>
+            </div>
+            <div class="video-container">
+                <div class="video-loader">
+                    <div class="spinner"></div>
+                </div>
+                <video class="preview-video" autoplay loop muted playsinline>
+                    <source src="assets/videos/5.mp4" type="video/mp4">
+                    Failed To Load Video
+                </video>
+            </div>
+        </div>
+        
+    </section>
+    <section style="padding: 80px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 20px; color: #000; font-family: 'DM Sans', sans-serif;">Synthar <span style="text-decoration: underline; font-style: italic;">Helper V1</span></h2>
+                <p style="color: #6e6e73; font-size: 1.125rem; line-height: 1.8; margin-bottom: 20px;">
+                    Instalocking Agents Faster Than You Can Even<span style="text-decoration: underline; font-weight: bold;">Load In.</span>
+                    Powered By The Valorant API And Heavy Optimization, <span style="text-decoration: underline; font-weight: bold;">Synthar Helper V1</span> is the <span style="text-decoration: underline; font-weight: bold;">Fastest</span> and <span style="text-decoration: underline; font-weight: bold;">Most Efficient</span> Valorant Assistant Available.
+                </p>
+                <a href="/products/helper" style="display: inline-block; background: #000; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif;">
+                    Learn More
+                </a>
+            </div>
+            <div class="video-container">
+                <div class="video-loader">
+                    <div class="spinner"></div>
+                </div>
+                <video class="preview-video" autoplay loop muted playsinline>
+                    <source src="assets/videos/6.mp4" type="video/mp4">
+                    Failed To Load Video
+                </video>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-brand">
+                    <img src="assets/inverted.png" alt="Synthar.cc" class="footer-logo" />
+                    <h3>Synthar<span class="brand-gradient">.cc</span></h3>
+                </div>
+                <p class="footer-description">
+                    Our solution allows you to enjoy unlimited fun while helping you stay undetected as you climb the ranks. With a strong track record of durability in avoiding bans, we're proud to share that many of our customers have achieved ranks of over Immortal.
+                </p>
+                <div class="footer-stats">
+                    <div class="stat-item">
+                        <span class="stat-dot blue"></span>
+                        <span class="stat-text">650+ Customers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-dot blue"></span>
+                        <span class="stat-text">890+ Sold</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-dot blue"></span>
+                        <span class="stat-text">4.9★ Rating</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-links-grid" style="text-align: left;">
+                <div class="footer-column">
+                    <h4 style="text-align: left;">Navigation</h4>
+                    <a href="#products">Products</a>
+                    <a href="https://discord.gg/synthar" target="_blank">Status</a>
+                    <a href="https://discord.gg/synthar" target="_blank">Vouches</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+
+                <div class="footer-column">
+                    <h4 style="text-align: left;">Information</h4>
+                    <a href="/tos">Terms of Service</a>
+                    <a href="https://discord.gg/synthar" target="_blank">Discord</a>
+                </div>
+
+                <div class="footer-column">
+                    <h4 style="text-align: left;">Games</h4>
+                    <a href="#valorant">Valorant</a>
+                    <a href="#marvel">Rivals</a>
+                    <a href="#apex">Apex</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Copyright © 2025. All Rights Reserved.</p>
+            <div class="footer-status">
+                <span>Status:</span>
+                <span class="status-indicator">
+                    <span class="status-dot"></span>
+                    All Products Updated
+                </span>
+            </div>
+        </div>
+    </footer>
+    <script src="scripts/index.js"></script>
+    <script>
+        // Mobile detection
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        }
+
+        if (isMobileDevice()) {
+            document.getElementById('mobileWarning').classList.add('active');
+        }
+
+        // Animate navbar from scrolled to normal position on load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const navbar = document.getElementById('navbar');
+                if (navbar) {
+                    navbar.classList.remove('initial');
+                }
+            }, 0);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            if (scrollIndicator) {
+                scrollIndicator.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: window.innerHeight,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // Handle video loading
+            const videos = document.querySelectorAll('.preview-video');
+            videos.forEach(video => {
+                const container = video.closest('.video-container');
+                const loader = container.querySelector('.video-loader');
+
+                video.addEventListener('loadeddata', function() {
+                    loader.classList.add('hidden');
+                    video.classList.add('loaded');
+                });
+
+                // Fallback in case video is already loaded
+                if (video.readyState >= 3) {
+                    loader.classList.add('hidden');
+                    video.classList.add('loaded');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthar Spoofer - HWID Spoofer | Synthar.cc</title>
+    <meta name="description" content="Synthar Spoofer - Professional HWID spoofer with TPM and VGK bypass. Works on all motherboards.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="/favicon.ico" alt="Synthar Logo" class="favicon" />
+                <span class="logo-text">Synthar.cc</span>
+            </div>
+            <div class="nav-links">
+                <a href='/'>Home</a>
+                <a href='/tos'>Terms</a>
+                <a href='/dashboard/login'>Dash</a>
+                <a href="https://discord.gg/synthar" target="_blank" class="download-nav-btn">
+                    <span class="nav-btn-text">Discord</span>
+                    <i class="fab fa-discord nav-btn-icon"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="product-container">
+        <div class="product-layout">
+            <div class="product-content">
+                <div class="back-to-products">
+                    <a href="/#buy" class="back-button">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back To Products
+                    </a>
+                </div>
+                <h1 class="product-title">Synthar Spoofer</h1>
+
+                <div class="pricing-options">
+                    <label class="price-option">
+                        <input type="radio" name="pricing" value="https://mrisolutions.ca/pages/checkout?p=synthar-spoofer-onetime-751226">
+                        <div class="price-info">
+                            <div class="price-duration">One Time</div>
+                            <div class="price-description">1 Day (Perm Spoof Lasts Forvever Though)</div>
+                        </div>
+                        <div class="price-amount">$14.99</div>
+                    </label>
+
+                    <label class="price-option">
+                        <input type="radio" name="pricing" value="https://mrisolutions.ca/pages/checkout?p=synthar-spoofer-lifetime-803499">
+                        <div class="price-info">
+                            <div class="price-duration">Lifetime <span class="price-badge">BEST VALUE</span></div>
+                            <div class="price-description">Infinite</div>
+                        </div>
+                        <div class="price-amount">$34.99</div>
+                    </label>
+                </div>
+
+                <div class="purchase-section">
+                    <div class="tos-checkbox">
+                        <input type="checkbox" id="tos-accept">
+                        <label for="tos-accept">I accept the <a href='../tos' target='_blank'>Terms of Service</a> (No Refunds)</label>
+                    </div>
+                    <div class="disclaimer-checkbox">
+                        <input type="checkbox" id="disclaimer-accept">
+                        <label for="disclaimer-accept">I read the Disclaimer</label>
+                    </div>
+                    <button class="buy-button" id="buy-btn">
+                        <span class="button-content">
+                            <span class="button-text">Checkout</span>
+                            <span class="payment-logos">
+                                <!-- Stripe Logo -->
+                                <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                                    <rect x="2" y="9" width="20" height="3" fill="currentColor"/>
+                                    <rect x="5" y="14" width="3" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="10" y="14" width="6" height="1" rx="0.5" fill="currentColor"/>
+                                </svg>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <!-- Litecoin (LTC) -->
+                                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                      <path d="M15.5 7h-2l-1.2 4.5h2.5l-.4 1.5h-2.5l-.6 2.2h6l-.4 1.5h-8l.8-3h-1.8l.4-1.5h1.8L11.9 7h3.6l-.4 1.5z" fill="currentColor"/>
+                                    </svg>
+                                  
+                                    <!-- Bitcoin (BTC) -->
+                                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                      <path d="M13.5 7.5h-3v9h3a2.5 2.5 0 0 0 0-5H13a2.5 2.5 0 0 0 0-5zM10.5 12h3.2a1.5 1.5 0 0 1 0 3h-3.2V12zm0-1.5V9h3.2a1.5 1.5 0 0 1 0 3h-3.2z" fill="currentColor"/>
+                                    </svg>
+                                  
+                                    <!-- Ethereum (ETH) -->
+                                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                                      <path d="M12 5l4.5 7-4.5 2.5L7.5 12 12 5zm0 14l-4.5-6 4.5 2.5L16.5 13 12 19z" fill="currentColor"/>
+                                    </svg>
+                                  </div>
+                                                                  
+                            </span>
+                        </span>
+                    </button>
+                    <div class="error-message" id="error-message"></div>
+                </div>
+            </div>
+
+            <div class="image-gallery">
+                <img src="../assets/images/spoofer1.png" alt="Synthar Spoofer Interface">
+                
+                <!-- Description Section -->
+                <div class="product-details">
+                    <div class="details-section">
+                        <h5>DISCLAIMER: Please Know If Your PC Is Compatible Before Purchase AND NOTE THIS MIGHT NOT AVOID DELAY BANS ON VALORANT</h5>
+                        <h2>Features</h2>
+                        <ul>
+                            <li>HWID Spoofing (Excluding CPU, GPU)</li>
+                            <li>TPM Driver Spoof</li>
+                            <li>VGK/Popup Bypass (Buggy)</li>
+                            <li>Permanent HWID Changes</li>
+                            <li>Requires Bios Flash</li>
+                            <li>Requires Fresh Reinstall</li>
+                            <li>Not Recommended For Newbies</li>
+                            <li>Supports Literally Any Game</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h2>Requirements</h2>
+                        <ul>
+                            <li>Windows 10 (64-bit)</li>
+                            <li>Secure Boot, Tpm, Virtualization/HVCI Support</li>
+                            <li>Administrator Privileges</li>
+                            <li>USB Drive</li>
+                            <li>Not HP Motherboard</li>
+                            <li>Flashable Bios</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sticky Checkout Button for Mobile/Tablet -->
+    <div class="sticky-checkout" id="sticky-checkout">
+        <div class="sticky-checkout-info">
+            <span id="sticky-product-name">Select a plan</span>
+            <span class="sticky-checkout-price" id="sticky-price">--</span>
+        </div>
+        <button class="buy-button" id="sticky-buy-btn">
+            <span class="button-content">
+                <span class="button-text">Checkout</span>
+                <span class="payment-logos">
+                    <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                        <rect x="2" y="9" width="20" height="3" fill="currentColor"/>
+                        <rect x="5" y="14" width="3" height="2" rx="0.5" fill="currentColor"/>
+                        <rect x="10" y="14" width="6" height="1" rx="0.5" fill="currentColor"/>
+                    </svg>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M15.5 7h-2l-1.2 4.5h2.5l-.4 1.5h-2.5l-.6 2.2h6l-.4 1.5h-8l.8-3h-1.8l.4-1.5h1.8L11.9 7h3.6l-.4 1.5z" fill="currentColor"/>
+                        </svg>
+                        <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M13.5 7.5h-3v9h3a2.5 2.5 0 0 0 0-5H13a2.5 2.5 0 0 0 0-5zM10.5 12h3.2a1.5 1.5 0 0 1 0 3h-3.2V12zm0-1.5V9h3.2a1.5 1.5 0 0 1 0 3h-3.2z" fill="currentColor"/>
+                        </svg>
+                        <svg class="payment-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M12 5l4.5 7-4.5 2.5L7.5 12 12 5zm0 14l-4.5-6 4.5 2.5L16.5 13 12 19z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </span>
+            </span>
+        </button>
+    </div>
+    
+    <script>
+        const priceOptions = document.querySelectorAll('.price-option');
+        const buyButton = document.getElementById('buy-btn');
+        const stickyBuyButton = document.getElementById('sticky-buy-btn');
+        const tosCheckbox = document.getElementById('tos-accept');
+        const disclaimerCheckbox = document.getElementById('disclaimer-accept');
+        const stickyPrice = document.getElementById('sticky-price');
+        const stickyProductName = document.getElementById('sticky-product-name');
+        
+        const priceMap = {
+            'https://mrisolutions.ca/pages/checkout?p=synthar-spoofer-onetime-751226': { price: '$29.99', name: 'One Time' },
+            'https://mrisolutions.ca/pages/checkout?p=synthar-spoofer-lifetime-803499': { price: '$49.99', name: 'Lifetime Plan' }
+        };
+
+        priceOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                priceOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Update sticky checkout info
+                const selectedOption = this.querySelector('input[name="pricing"]');
+                if (selectedOption && priceMap[selectedOption.value]) {
+                    const info = priceMap[selectedOption.value];
+                    stickyPrice.textContent = info.price;
+                    stickyProductName.textContent = info.name;
+                }
+            });
+        });
+
+        const errorMessage = document.getElementById('error-message');
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hide');
+            errorMessage.classList.add('show');
+            
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+                errorMessage.classList.add('hide');
+            }, 4000);
+        }
+
+        function handleCheckout() {
+            const selectedOption = document.querySelector('input[name="pricing"]:checked');
+            
+            if (!selectedOption) {
+                showError('Please select a pricing option.');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            if (!tosCheckbox.checked) {
+                showError('Please accept the Terms of Service before purchasing.');
+                tosCheckbox.focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            if (!disclaimerCheckbox.checked) {
+                showError('Acknowledge the disclaimer before purchasing.');
+                disclaimerCheckbox.focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            window.location.href = selectedOption.value;
+        }
+        
+        buyButton.addEventListener('click', handleCheckout);
+        stickyBuyButton.addEventListener('click', handleCheckout);
+
+        // Scroll indicator fade out logic
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        const productDetails = document.querySelector('.product-details');
+
+        if (scrollIndicator && productDetails) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        scrollIndicator.classList.add('hidden');
+                    } else {
+                        scrollIndicator.classList.remove('hidden');
+                    }
+                });
+            }, {
+                threshold: 0.9
+            });
+
+            observer.observe(productDetails);
+        }
+
+        // Fade-in animation for images and description
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Use setTimeout to ensure DOM is fully rendered
+        setTimeout(() => {
+            // Observe all images in the gallery
+            const galleryImages = document.querySelectorAll('.image-gallery img');
+            galleryImages.forEach(img => {
+                // Immediately show images that are already in viewport
+                const rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    img.classList.add('fade-in');
+                }
+                fadeInObserver.observe(img);
+            });
+
+            // Immediately show product details and observe
+            if (productDetails) {
+                productDetails.classList.add('fade-in');
+                fadeInObserver.observe(productDetails);
+            }
+        }, 100);
+    </script>
+</body>
+
+<!-- Mirrored from synthar.cc/products/spoofer by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Oct 2025 02:13:24 GMT -->
+</html>

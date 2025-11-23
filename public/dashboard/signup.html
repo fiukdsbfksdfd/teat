@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Synthar.cc</title>
+    <meta name="description" content="Create your Synthar account">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/signup.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="split-container">
+            <div class="left-panel">
+                <div class="brand-header">
+                    <img src="/favicon.ico" alt="Synthar" class="brand-logo" />
+                    <span class="brand-name">Synthar.cc</span>
+                </div>
+
+                <div class="form-container auth-card">
+                    <h1 class="form-title">Let's Get Started</h1>
+                    <p class="form-subtitle">Create a new account</p>
+
+                    <form id="signup-form">
+                        <div id="signup-message" class="message hidden"></div>
+
+                        <div class="input-group form-group">
+                            <label class="input-label form-label" for="signup-username">Username</label>
+                            <input type="text" id="signup-username" class="input-field form-input" placeholder="Your username" required>
+                        </div>
+
+                        <div class="input-group form-group">
+                            <label class="input-label form-label" for="signup-email">Email</label>
+                            <input type="email" id="signup-email" class="input-field form-input" placeholder="you@example.com" required>
+                        </div>
+
+                        <div class="input-group form-group">
+                            <label class="input-label form-label" for="signup-password">Password</label>
+                            <div class="password-toggle">
+                                <input type="password" id="signup-password" class="input-field form-input" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group form-group">
+                            <label class="input-label form-label" for="signup-confirm">Confirm Password</label>
+                            <div class="password-toggle">
+                                <input type="password" id="signup-confirm" class="input-field form-input" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="signup-btn" class="submit-button submit-btn">Sign Up</button>
+
+                        <p class="footer-text">
+                            Have an account? <a href="/dashboard/login">Sign In Now</a>
+                        </p>
+                    </form>
+
+                    <p class="footer-text" style="margin-top: 40px; font-size: 0.75rem; line-height: 1.6;">
+                        By continuing, you agree to Synthar's <a href="/tos">Terms of Service</a> and <a href="/tos">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <a href="/" class="doc-link">Go Home</a>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "+rep ⁠𝑆𝑡𝑎𝑛𝑑𝑎𝑟𝑑 is so goated the tb is the best tb out of any provider I will give u 100 euros if you find a better colour tb that synthar I posted a clip in clips " 
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar"></div>
+                        <span class="author-name">@kw4re</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOS Modal -->
+    <div id="tos-modal" class="tos-modal" style="display: none;">
+        <div class="tos-modal-content">
+            <div class="tos-modal-header">
+                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Terms of Service</h2>
+                <button id="close-tos" class="tos-close-btn">&times;</button>
+            </div>
+            <div class="tos-modal-body">
+                <div style="padding: 30px; line-height: 1.8; color: #1d1d1f;">
+                    <h3>Terms of Service</h3>
+                    <p>Please read these terms carefully before using our service.</p>
+                    <p>By accessing or using Synthar.cc, you agree to be bound by these Terms of Service and all applicable laws and regulations.</p>
+                    <p>Terms Of Service Can be Found <a href="/tos" target="_blank">Here</a></p>
+                </div>
+            </div>
+            <div class="tos-modal-footer">
+                <p style="margin-bottom: 20px; color: #1d1d1f; font-weight: 500;">By clicking "I Agree", you confirm that you have read and agree to the Terms of Service.</p>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button id="tos-decline" class="tos-btn tos-btn-secondary">Decline</button>
+                    <button id="tos-agree" class="tos-btn tos-btn-primary">I Agree</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .message.hidden {
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error-message {
+            background-color: #fee;
+            color: #c00;
+            border: 1px solid #fcc;
+        }
+
+        .message.success-message {
+            background-color: #efe;
+            color: #0a0;
+            border: 1px solid #cfc;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .tos-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .tos-modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .tos-modal-header {
+            padding: 24px 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tos-close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #6e6e73;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .tos-close-btn:hover {
+            color: #000;
+        }
+
+        .tos-modal-body {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+        }
+
+        .tos-modal-footer {
+            padding: 24px 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .tos-btn {
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .tos-btn-primary {
+            background: #000;
+            color: white;
+        }
+
+        .tos-btn-primary:hover {
+            background: #333;
+        }
+
+        .tos-btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+            color: #000;
+        }
+
+        .tos-btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <script type="module" src="/assets/scripts/script.js"></script>
+</body>
+</html>
