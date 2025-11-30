@@ -43,6 +43,10 @@ if (AES_KEY.length !== 32) {
 }
 
 const app = express();
+
+// CRITICAL: Trust proxy for Render/Cloudflare
+app.set('trust proxy', true);
+
 app.use(helmet());
 app.use(bodyParser.json({ limit: '200kb' }));
 app.use(cors());
@@ -239,25 +243,25 @@ app.post('/validate', validateLimiter, (req, res) => {
     console.log('[VALIDATE] Parsed:', parsed);
     
     if (!parsed || !parsed.validSig) {
-      logEvent({ key_text: keyText, event: 'invalid_format', hwid, ip, cert_fp });
+      logEvent({ key_text: keyText, event: 'invalid_format', hwid, ip, cert_fp: certFp });
       return res.status(401).json({ ok: false, error: 'invalid signature or format' });
     }
 
     // Token-level expiry check
     if (parsed.exp && parsed.exp < nowSeconds()) {
-      logEvent({ key_text: keyText, event: 'expired_token', hwid, ip, cert_fp });
+      logEvent({ key_text: keyText, event: 'expired_token', hwid, ip, cert_fp: certFp });
       return res.status(403).json({ ok: false, error: 'key expired (token-level)' });
     }
 
     const row = db.prepare('SELECT * FROM keys WHERE key_text = ?').get(keyText);
     if (!row) {
-      logEvent({ key_text: keyText, event: 'not_found', hwid, ip, cert_fp });
+      logEvent({ key_text: keyText, event: 'not_found', hwid, ip, cert_fp: certFp });
       return res.status(404).json({ ok: false, error: 'key not registered' });
     }
 
     // DB expiry check
     if (row.expires_at && row.expires_at < nowSeconds()) {
-      logEvent({ key_id: row.id, key_text: keyText, event: 'expired', hwid, ip, cert_fp });
+      logEvent({ key_id: row.id, key_text: keyText, event: 'expired', hwid, ip, cert_fp: certFp });
       return res.status(403).json({ ok: false, error: 'key expired' });
     }
 
@@ -273,7 +277,7 @@ app.post('/validate', validateLimiter, (req, res) => {
       if (Array.isArray(allowedList) && allowedList.length > 0) {
         const allowedNormalized = allowedList.map(a => normalizeIP(a.trim()));
         if (!allowedNormalized.includes(ip)) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'ip_blocked', hwid, ip, cert_fp });
+          logEvent({ key_id: row.id, key_text: keyText, event: 'ip_blocked', hwid, ip, cert_fp: certFp });
           return res.status(403).json({ ok: false, error: 'IP not allowed for this key' });
         }
       }
@@ -290,7 +294,7 @@ app.post('/validate', validateLimiter, (req, res) => {
       
       if (Array.isArray(allowedCerts) && allowedCerts.length > 0) {
         if (!certFp || !allowedCerts.includes(certFp)) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'cert_blocked', hwid, ip, cert_fp });
+          logEvent({ key_id: row.id, key_text: keyText, event: 'cert_blocked', hwid, ip, cert_fp: certFp });
           return res.status(403).json({ ok: false, error: 'certificate fingerprint not allowed' });
         }
       }
@@ -300,28 +304,28 @@ app.post('/validate', validateLimiter, (req, res) => {
     if (row.bind_on_first_use) {
       if (!row.bound_hwid) {
         if (!hwid) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_required_bind', hwid, ip, cert_fp });
+          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_required_bind', hwid, ip, cert_fp: certFp });
           return res.status(400).json({ ok:false, error: 'hwid required to bind key' });
         }
         db.prepare('UPDATE keys SET bound_hwid = ? WHERE id = ?').run(hwid, row.id);
-        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_bound', hwid, ip, cert_fp });
+        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_bound', hwid, ip, cert_fp: certFp });
       } else {
         if (hwid && hwid !== row.bound_hwid) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp });
+          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp: certFp });
           return res.status(403).json({ ok: false, error: 'hwid mismatch' });
         }
         if (!hwid) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp });
+          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp: certFp });
           return res.status(400).json({ ok:false, error: 'hwid required' });
         }
       }
     } else if (row.bound_hwid) {
       if (!hwid) {
-        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp });
+        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp: certFp });
         return res.status(400).json({ ok:false, error: 'hwid required' });
       }
       if (hwid !== row.bound_hwid) {
-        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp });
+        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp: certFp });
         return res.status(403).json({ ok: false, error: 'hwid mismatch' });
       }
     }
@@ -329,7 +333,7 @@ app.post('/validate', validateLimiter, (req, res) => {
     // Success - update bound_hwid if it was just bound
     const currentRow = db.prepare('SELECT * FROM keys WHERE id = ?').get(row.id);
     
-    logEvent({ key_id: row.id, key_text: keyText, event: 'validated', hwid, ip, cert_fp });
+    logEvent({ key_id: row.id, key_text: keyText, event: 'validated', hwid, ip, cert_fp: certFp });
 
     const payload = {
       id: currentRow.id,
