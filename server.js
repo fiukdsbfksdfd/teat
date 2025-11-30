@@ -56,13 +56,41 @@ app.use(morgan('combined'));
 const validateLimiter = rateLimit({
   windowMs: 10 * 1000,
   max: 50,
-  message: { error: 'Too many requests, slow down.' }
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Use X-Forwarded-For from Cloudflare/Render
+  keyGenerator: (req) => {
+    return req.ip || req.socket.remoteAddress || 'unknown';
+  },
+  skip: (req) => {
+    // Skip rate limiting in development
+    return process.env.NODE_ENV === 'development';
+  },
+  handler: (req, res) => {
+    res.status(429).json({ 
+      ok: false, 
+      error: 'Too many requests, please slow down.' 
+    });
+  }
 });
 
 const adminLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 100,
-  message: { error: 'Too many admin requests, slow down.' }
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    return req.ip || req.socket.remoteAddress || 'unknown';
+  },
+  skip: (req) => {
+    return process.env.NODE_ENV === 'development';
+  },
+  handler: (req, res) => {
+    res.status(429).json({ 
+      ok: false, 
+      error: 'Too many admin requests, please slow down.' 
+    });
+  }
 });
 
 // Ensure DB directory exists
