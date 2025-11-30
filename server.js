@@ -1,12 +1,8 @@
 /**
- * Key Auth Server - FIXED VERSION
- *
- * - Custom key format: <GROUP>-<RANDOM>-<EXP>-<SIG>   (SIG = HMAC-SHA256)
- * - AES-256-GCM helpers for encrypting sensitive payloads
- * - HWID binding and reset
- * - IP checks (per-key allowlist)
- * - Optional cert fingerprint check (header or mTLS)
- * - Admin dashboard routes locked to ADMIN_IP and ADMIN_API_KEY
+ * Key Auth Server - PostgreSQL Version
+ * 
+ * Uses PostgreSQL for persistent storage on Render
+ * Set DATABASE_URL environment variable with your Render PostgreSQL connection string
  */
 
 const express = require('express');
@@ -16,18 +12,22 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const crypto = require('crypto');
-const Database = require('better-sqlite3');
+const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const DB_PATH = process.env.DB_PATH || './data/keys.db';
+const DATABASE_URL = process.env.DATABASE_URL;
 const AES_KEY_B64 = process.env.AES_KEY;
 const HMAC_KEY_B64 = process.env.HMAC_KEY;
 const ADMIN_IP = process.env.ADMIN_IP || null;
 const ADMIN_API_KEY = process.env.ADMIN_API_KEY || null;
 const CERT_FP_HEADER = process.env.CERT_FINGERPRINT_HEADER || 'x-client-cert-fp';
+
+if (!DATABASE_URL) {
+  console.error('ERROR: DATABASE_URL environment variable is required.');
+  console.error('Get it from your Render PostgreSQL database dashboard.');
+  process.exit(1);
+}
 
 if (!AES_KEY_B64 || !HMAC_KEY_B64) {
   console.error('ERROR: AES_KEY and HMAC_KEY environment variables are required (base64).');
@@ -42,11 +42,14 @@ if (AES_KEY.length !== 32) {
   process.exit(1);
 }
 
+// PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
+
 const app = express();
-
-// CRITICAL: Trust proxy for Render/Cloudflare
 app.set('trust proxy', true);
-
 app.use(helmet());
 app.use(bodyParser.json({ limit: '200kb' }));
 app.use(cors());
@@ -58,20 +61,9 @@ const validateLimiter = rateLimit({
   max: 50,
   standardHeaders: true,
   legacyHeaders: false,
-  // Use X-Forwarded-For from Cloudflare/Render
-  keyGenerator: (req) => {
-    return req.ip || req.socket.remoteAddress || 'unknown';
-  },
-  skip: (req) => {
-    // Skip rate limiting in development
-    return process.env.NODE_ENV === 'development';
-  },
-  handler: (req, res) => {
-    res.status(429).json({ 
-      ok: false, 
-      error: 'Too many requests, please slow down.' 
-    });
-  }
+  keyGenerator: (req) => req.ip || 'unknown',
+  skip: (req) => process.env.NODE_ENV === 'development',
+  handler: (req, res) => res.status(429).json({ ok: false, error: 'Too many requests' })
 });
 
 const adminLimiter = rateLimit({
@@ -79,58 +71,51 @@ const adminLimiter = rateLimit({
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => {
-    return req.ip || req.socket.remoteAddress || 'unknown';
-  },
-  skip: (req) => {
-    return process.env.NODE_ENV === 'development';
-  },
-  handler: (req, res) => {
-    res.status(429).json({ 
-      ok: false, 
-      error: 'Too many admin requests, please slow down.' 
-    });
-  }
+  keyGenerator: (req) => req.ip || 'unknown',
+  skip: (req) => process.env.NODE_ENV === 'development',
+  handler: (req, res) => res.status(429).json({ ok: false, error: 'Too many admin requests' })
 });
 
-// Ensure DB directory exists
-const dir = path.dirname(DB_PATH);
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-  console.log("Created missing DB directory:", dir);
+// Initialize Database
+async function initDB() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS keys (
+        id TEXT PRIMARY KEY,
+        key_text TEXT UNIQUE NOT NULL,
+        group_name TEXT,
+        created_at BIGINT,
+        expires_at BIGINT,
+        time_length_seconds INTEGER,
+        bind_on_first_use BOOLEAN DEFAULT true,
+        bound_hwid TEXT,
+        allowed_ips JSONB,
+        allowed_cert_fps JSONB,
+        extra JSONB
+      )
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS logs (
+        id SERIAL PRIMARY KEY,
+        key_id TEXT,
+        key_text TEXT,
+        event TEXT,
+        hwid TEXT,
+        ip TEXT,
+        cert_fp TEXT,
+        created_at BIGINT
+      )
+    `);
+
+    console.log('✅ Database initialized');
+  } catch (err) {
+    console.error('Database initialization error:', err);
+    process.exit(1);
+  }
 }
 
-const db = new Database(DB_PATH);
-
-// Initialize DB
-db.exec(`
-CREATE TABLE IF NOT EXISTS keys (
-  id TEXT PRIMARY KEY,
-  key_text TEXT UNIQUE,
-  group_name TEXT,
-  created_at INTEGER,
-  expires_at INTEGER,
-  time_length_seconds INTEGER,
-  bind_on_first_use INTEGER DEFAULT 1,
-  bound_hwid TEXT,
-  allowed_ips TEXT,
-  allowed_cert_fps TEXT,
-  extra JSON
-);
-
-CREATE TABLE IF NOT EXISTS logs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  key_id TEXT,
-  key_text TEXT,
-  event TEXT,
-  hwid TEXT,
-  ip TEXT,
-  cert_fp TEXT,
-  created_at INTEGER
-);
-`);
-
-// ---------- Utilities ----------
+// Utilities
 function nowSeconds() {
   return Math.floor(Date.now() / 1000);
 }
@@ -147,29 +132,14 @@ function aesEncrypt(plain) {
   return Buffer.concat([iv, tag, encrypted]).toString('base64');
 }
 
-function aesDecrypt(b64) {
-  const data = Buffer.from(b64, 'base64');
-  const iv = data.slice(0, 12);
-  const tag = data.slice(12, 28);
-  const encrypted = data.slice(28);
-  const decipher = crypto.createDecipheriv('aes-256-gcm', AES_KEY, iv);
-  decipher.setAuthTag(tag);
-  const out = Buffer.concat([decipher.update(encrypted), decipher.final()]);
-  return JSON.parse(out.toString('utf8'));
-}
-
 function makeRandomSegment(len = 8) {
   return crypto.randomBytes(len).toString('hex').toUpperCase();
 }
 
 function normalizeIP(ip) {
-  // Strip IPv6 prefix if present
   return ip.replace(/^::ffff:/i, '');
 }
 
-/**
- * Key format: <GROUP>-<RANDOM>-<EXP>-<SIG>
- */
 function generateKeyToken({ group='DEFAULT', lifetimeSeconds = 86400 * 30 }) {
   const random = makeRandomSegment(6);
   const exp = nowSeconds() + lifetimeSeconds;
@@ -190,57 +160,44 @@ function parseKeyToken(token) {
     const group = parts[0];
     const random = parts.slice(1, parts.length - 2).join('-');
     
-    // Validate expiry is a valid number
     const expNum = Number(exp);
     if (!Number.isInteger(expNum) || expNum < 0) return null;
-    
-    // Validate signature is valid hex
     if (!/^[0-9a-fA-F]+$/.test(sig)) return null;
     
     const payload = `${group}-${random}-${exp}`;
     const expected = hmacSign(payload);
     
-    // FIXED: Proper signature comparison with same-length buffers
     let validSig = false;
     try {
       if (sig.length === expected.length && sig.length === 64) {
         const sigBuf = Buffer.from(sig, 'hex');
         const expBuf = Buffer.from(expected, 'hex');
-        
-        // Ensure both buffers are 32 bytes (SHA256 output)
         if (sigBuf.length === 32 && expBuf.length === 32) {
           validSig = crypto.timingSafeEqual(sigBuf, expBuf);
         }
       }
     } catch (e) {
-      console.error('Signature comparison error:', e);
       validSig = false;
     }
     
-    return {
-      validSig,
-      group,
-      random,
-      exp: expNum,
-      sig,
-      rawPayload: payload
-    };
+    return { validSig, group, random, exp: expNum, sig, rawPayload: payload };
   } catch (err) {
-    console.error('parseKeyToken error:', err);
     return null;
   }
 }
 
-function logEvent({ key_id=null, key_text=null, event, hwid=null, ip=null, cert_fp=null }) {
+async function logEvent({ key_id=null, key_text=null, event, hwid=null, ip=null, cert_fp=null }) {
   try {
-    const stmt = db.prepare(`INSERT INTO logs (key_id, key_text, event, hwid, ip, cert_fp, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`);
-    stmt.run(key_id, key_text, event, hwid, ip, cert_fp, nowSeconds());
+    await pool.query(
+      `INSERT INTO logs (key_id, key_text, event, hwid, ip, cert_fp, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [key_id, key_text, event, hwid, ip, cert_fp, nowSeconds()]
+    );
   } catch (err) {
     console.error('logEvent error:', err);
   }
 }
 
-// ---------- Middlewares ----------
+// Middlewares
 function adminGuard(req, res, next) {
   const requesterIp = normalizeIP(req.ip || req.connection.remoteAddress);
   const normalizedAdminIp = ADMIN_IP ? normalizeIP(ADMIN_IP) : null;
@@ -256,8 +213,8 @@ function adminGuard(req, res, next) {
   next();
 }
 
-// ---------- Public API ----------
-app.post('/validate', validateLimiter, (req, res) => {
+// Public API
+app.post('/validate', validateLimiter, async (req, res) => {
   try {
     const { key: keyText, hwid } = req.body || {};
     const ip = normalizeIP(req.ip || req.connection.remoteAddress);
@@ -271,60 +228,42 @@ app.post('/validate', validateLimiter, (req, res) => {
     console.log('[VALIDATE] Parsed:', parsed);
     
     if (!parsed || !parsed.validSig) {
-      logEvent({ key_text: keyText, event: 'invalid_format', hwid, ip, cert_fp: certFp });
+      await logEvent({ key_text: keyText, event: 'invalid_format', hwid, ip, cert_fp: certFp });
       return res.status(401).json({ ok: false, error: 'invalid signature or format' });
     }
 
-    // Token-level expiry check
     if (parsed.exp && parsed.exp < nowSeconds()) {
-      logEvent({ key_text: keyText, event: 'expired_token', hwid, ip, cert_fp: certFp });
+      await logEvent({ key_text: keyText, event: 'expired_token', hwid, ip, cert_fp: certFp });
       return res.status(403).json({ ok: false, error: 'key expired (token-level)' });
     }
 
-    const row = db.prepare('SELECT * FROM keys WHERE key_text = ?').get(keyText);
+    const result = await pool.query('SELECT * FROM keys WHERE key_text = $1', [keyText]);
+    const row = result.rows[0];
+    
     if (!row) {
-      logEvent({ key_text: keyText, event: 'not_found', hwid, ip, cert_fp: certFp });
+      await logEvent({ key_text: keyText, event: 'not_found', hwid, ip, cert_fp: certFp });
       return res.status(404).json({ ok: false, error: 'key not registered' });
     }
 
-    // DB expiry check
     if (row.expires_at && row.expires_at < nowSeconds()) {
-      logEvent({ key_id: row.id, key_text: keyText, event: 'expired', hwid, ip, cert_fp: certFp });
+      await logEvent({ key_id: row.id, key_text: keyText, event: 'expired', hwid, ip, cert_fp: certFp });
       return res.status(403).json({ ok: false, error: 'key expired' });
     }
 
     // IP check
-    if (row.allowed_ips) {
-      let allowedList;
-      try { 
-        allowedList = JSON.parse(row.allowed_ips); 
-      } catch (e) { 
-        allowedList = []; 
-      }
-      
-      if (Array.isArray(allowedList) && allowedList.length > 0) {
-        const allowedNormalized = allowedList.map(a => normalizeIP(a.trim()));
-        if (!allowedNormalized.includes(ip)) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'ip_blocked', hwid, ip, cert_fp: certFp });
-          return res.status(403).json({ ok: false, error: 'IP not allowed for this key' });
-        }
+    if (row.allowed_ips && Array.isArray(row.allowed_ips) && row.allowed_ips.length > 0) {
+      const allowedNormalized = row.allowed_ips.map(a => normalizeIP(a.trim()));
+      if (!allowedNormalized.includes(ip)) {
+        await logEvent({ key_id: row.id, key_text: keyText, event: 'ip_blocked', hwid, ip, cert_fp: certFp });
+        return res.status(403).json({ ok: false, error: 'IP not allowed for this key' });
       }
     }
 
-    // Cert fingerprint check
-    if (row.allowed_cert_fps) {
-      let allowedCerts;
-      try { 
-        allowedCerts = JSON.parse(row.allowed_cert_fps); 
-      } catch (e) { 
-        allowedCerts = []; 
-      }
-      
-      if (Array.isArray(allowedCerts) && allowedCerts.length > 0) {
-        if (!certFp || !allowedCerts.includes(certFp)) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'cert_blocked', hwid, ip, cert_fp: certFp });
-          return res.status(403).json({ ok: false, error: 'certificate fingerprint not allowed' });
-        }
+    // Cert check
+    if (row.allowed_cert_fps && Array.isArray(row.allowed_cert_fps) && row.allowed_cert_fps.length > 0) {
+      if (!certFp || !row.allowed_cert_fps.includes(certFp)) {
+        await logEvent({ key_id: row.id, key_text: keyText, event: 'cert_blocked', hwid, ip, cert_fp: certFp });
+        return res.status(403).json({ ok: false, error: 'certificate fingerprint not allowed' });
       }
     }
 
@@ -332,106 +271,76 @@ app.post('/validate', validateLimiter, (req, res) => {
     if (row.bind_on_first_use) {
       if (!row.bound_hwid) {
         if (!hwid) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_required_bind', hwid, ip, cert_fp: certFp });
+          await logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_required_bind', hwid, ip, cert_fp: certFp });
           return res.status(400).json({ ok:false, error: 'hwid required to bind key' });
         }
-        db.prepare('UPDATE keys SET bound_hwid = ? WHERE id = ?').run(hwid, row.id);
-        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_bound', hwid, ip, cert_fp: certFp });
+        await pool.query('UPDATE keys SET bound_hwid = $1 WHERE id = $2', [hwid, row.id]);
+        await logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_bound', hwid, ip, cert_fp: certFp });
+        row.bound_hwid = hwid;
       } else {
         if (hwid && hwid !== row.bound_hwid) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp: certFp });
+          await logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp: certFp });
           return res.status(403).json({ ok: false, error: 'hwid mismatch' });
         }
         if (!hwid) {
-          logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp: certFp });
+          await logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp: certFp });
           return res.status(400).json({ ok:false, error: 'hwid required' });
         }
       }
     } else if (row.bound_hwid) {
       if (!hwid) {
-        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp: certFp });
+        await logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_missing', hwid, ip, cert_fp: certFp });
         return res.status(400).json({ ok:false, error: 'hwid required' });
       }
       if (hwid !== row.bound_hwid) {
-        logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp: certFp });
+        await logEvent({ key_id: row.id, key_text: keyText, event: 'hwid_mismatch', hwid, ip, cert_fp: certFp });
         return res.status(403).json({ ok: false, error: 'hwid mismatch' });
       }
     }
 
-    // Success - update bound_hwid if it was just bound
-    const currentRow = db.prepare('SELECT * FROM keys WHERE id = ?').get(row.id);
-    
-    logEvent({ key_id: row.id, key_text: keyText, event: 'validated', hwid, ip, cert_fp: certFp });
+    await logEvent({ key_id: row.id, key_text: keyText, event: 'validated', hwid, ip, cert_fp: certFp });
 
     const payload = {
-      id: currentRow.id,
-      group: currentRow.group_name,
-      expires_at: currentRow.expires_at,
-      bound_hwid: currentRow.bound_hwid,
+      id: row.id,
+      group: row.group_name,
+      expires_at: row.expires_at,
+      bound_hwid: row.bound_hwid,
       server_time: nowSeconds()
     };
     const encrypted = aesEncrypt(payload);
 
-    console.log('[VALIDATE SUCCESS]', { 
-      key_id: currentRow.id, 
-      group: currentRow.group_name,
-      hwid: currentRow.bound_hwid,
-      expires_at: currentRow.expires_at 
-    });
+    console.log('[VALIDATE SUCCESS]', { key_id: row.id, group: row.group_name });
 
     return res.json({ 
       ok: true, 
       message: 'valid', 
       token: encrypted,
-      group: currentRow.group_name,
-      expires_at: currentRow.expires_at
+      group: row.group_name,
+      expires_at: row.expires_at
     });
   } catch (err) {
-    console.error('=== VALIDATE ERROR ===');
-    console.error('Error:', err);
-    console.error('Stack:', err.stack);
-    console.error('Request body:', req.body);
-    console.error('=====================');
-    return res.status(500).json({ ok: false, error: 'server error', details: process.env.NODE_ENV === 'development' ? err.message : undefined });
+    console.error('=== VALIDATE ERROR ===', err);
+    return res.status(500).json({ ok: false, error: 'server error' });
   }
 });
 
-// ---------- Admin Dashboard APIs ----------
-app.post('/admin/key/add', adminGuard, adminLimiter, (req, res) => {
+// Admin APIs
+app.post('/admin/key/add', adminGuard, adminLimiter, async (req, res) => {
   try {
-    const { 
-      group='DEFAULT', 
-      lifetimeSeconds = 86400 * 30, 
-      bindOnFirstUse = true, 
-      allowedIps = [], 
-      allowedCertFPs = [], 
-      extra = {} 
-    } = req.body || {};
+    const { group='DEFAULT', lifetimeSeconds = 86400 * 30, bindOnFirstUse = true, allowedIps = [], allowedCertFPs = [], extra = {} } = req.body || {};
 
     const keyText = generateKeyToken({ group, lifetimeSeconds });
     const id = uuidv4();
     const created = nowSeconds();
     const expires = created + Number(lifetimeSeconds || 0);
 
-    db.prepare(`INSERT INTO keys (
-      id, key_text, group_name, created_at, expires_at, time_length_seconds, 
-      bind_on_first_use, bound_hwid, allowed_ips, allowed_cert_fps, extra
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
-      id, keyText, group, created, expires, lifetimeSeconds, 
-      bindOnFirstUse ? 1 : 0, null, 
-      JSON.stringify(allowedIps || []), 
-      JSON.stringify(allowedCertFPs || []), 
-      JSON.stringify(extra || {})
+    await pool.query(
+      `INSERT INTO keys (id, key_text, group_name, created_at, expires_at, time_length_seconds, bind_on_first_use, allowed_ips, allowed_cert_fps, extra) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [id, keyText, group, created, expires, lifetimeSeconds, bindOnFirstUse, JSON.stringify(allowedIps), JSON.stringify(allowedCertFPs), JSON.stringify(extra)]
     );
 
-    logEvent({ 
-      key_id: id, 
-      key_text: keyText, 
-      event: 'created', 
-      hwid: null, 
-      ip: req.ip, 
-      cert_fp: req.headers[CERT_FP_HEADER] || null 
-    });
+    await logEvent({ key_id: id, key_text: keyText, event: 'created', ip: req.ip });
 
     return res.json({ ok: true, key: keyText, id, group, expires_at: expires });
   } catch (err) {
@@ -440,118 +349,24 @@ app.post('/admin/key/add', adminGuard, adminLimiter, (req, res) => {
   }
 });
 
-app.post('/admin/key/remove', adminGuard, adminLimiter, (req, res) => {
-  const { key, id } = req.body || {};
-  if (!key && !id) return res.status(400).json({ ok:false, error:'key or id required' });
-  
-  let row;
-  if (id) row = db.prepare('SELECT * FROM keys WHERE id = ?').get(id);
-  else row = db.prepare('SELECT * FROM keys WHERE key_text = ?').get(key);
-  
-  if (!row) return res.status(404).json({ ok:false, error:'not found' });
-  
-  db.prepare('DELETE FROM keys WHERE id = ?').run(row.id);
-  logEvent({ 
-    key_id: row.id, 
-    key_text: row.key_text, 
-    event: 'deleted', 
-    hwid:null, 
-    ip: req.ip, 
-    cert_fp: req.headers[CERT_FP_HEADER] || null 
-  });
-  
-  return res.json({ ok:true, deleted: row.id });
-});
-
-app.post('/admin/key/reset-hwid', adminGuard, adminLimiter, (req, res) => {
-  const { key, id } = req.body || {};
-  if (!key && !id) return res.status(400).json({ ok:false, error:'key or id required' });
-  
-  let row;
-  if (id) row = db.prepare('SELECT * FROM keys WHERE id = ?').get(id);
-  else row = db.prepare('SELECT * FROM keys WHERE key_text = ?').get(key);
-  
-  if (!row) return res.status(404).json({ ok:false, error:'not found' });
-  
-  db.prepare('UPDATE keys SET bound_hwid = NULL WHERE id = ?').run(row.id);
-  logEvent({ 
-    key_id: row.id, 
-    key_text: row.key_text, 
-    event: 'hwid_unbound', 
-    hwid:null, 
-    ip: req.ip, 
-    cert_fp: req.headers[CERT_FP_HEADER] || null 
-  });
-  
-  return res.json({ ok:true, id: row.id, message: 'hwid unbound' });
-});
-
-app.get('/admin/keys', adminGuard, (req, res) => {
+app.get('/admin/keys', adminGuard, async (req, res) => {
   const limit = Math.min(200, Number(req.query.limit || 50));
   const offset = Number(req.query.offset || 0);
-  const rows = db.prepare(
-    'SELECT id, key_text, group_name, created_at, expires_at, bind_on_first_use, bound_hwid FROM keys ORDER BY created_at DESC LIMIT ? OFFSET ?'
-  ).all(limit, offset);
-  return res.json({ ok:true, keys: rows });
-});
-
-app.get('/admin/key/:id', adminGuard, (req, res) => {
-  const id = req.params.id;
-  const row = db.prepare('SELECT * FROM keys WHERE id = ?').get(id);
-  if (!row) return res.status(404).json({ ok:false, error:'not found' });
-  
-  try {
-    row.allowed_ips = JSON.parse(row.allowed_ips || '[]');
-    row.allowed_cert_fps = JSON.parse(row.allowed_cert_fps || '[]');
-    row.extra = JSON.parse(row.extra || '{}');
-  } catch (e) {
-    console.error('parse error:', e);
-  }
-  
-  return res.json({ ok:true, key: row });
-});
-
-app.post('/admin/key/update', adminGuard, adminLimiter, (req, res) => {
-  const { id, allowedIps, allowedCertFPs, expiresAt, bindOnFirstUse } = req.body || {};
-  if (!id) return res.status(400).json({ ok:false, error:'id required' });
-  
-  const row = db.prepare('SELECT * FROM keys WHERE id = ?').get(id);
-  if (!row) return res.status(404).json({ ok:false, error:'not found' });
-
-  const stmt = db.prepare(
-    `UPDATE keys SET allowed_ips = ?, allowed_cert_fps = ?, expires_at = ?, bind_on_first_use = ? WHERE id = ?`
+  const result = await pool.query(
+    'SELECT id, key_text, group_name, created_at, expires_at, bind_on_first_use, bound_hwid FROM keys ORDER BY created_at DESC LIMIT $1 OFFSET $2',
+    [limit, offset]
   );
-  stmt.run(
-    allowedIps !== undefined ? JSON.stringify(allowedIps) : row.allowed_ips,
-    allowedCertFPs !== undefined ? JSON.stringify(allowedCertFPs) : row.allowed_cert_fps,
-    expiresAt !== undefined ? Number(expiresAt) : row.expires_at,
-    bindOnFirstUse !== undefined ? (bindOnFirstUse ? 1 : 0) : row.bind_on_first_use,
-    id
-  );
-  
-  logEvent({ 
-    key_id: id, 
-    key_text: row.key_text, 
-    event: 'updated', 
-    hwid:null, 
-    ip:req.ip, 
-    cert_fp: req.headers[CERT_FP_HEADER] || null 
-  });
-  
-  return res.json({ ok:true, id });
+  return res.json({ ok:true, keys: result.rows });
 });
 
-// ---------- Health Check ----------
 app.get('/', (req, res) => {
-  res.json({ 
-    ok:true, 
-    server_time: nowSeconds(), 
-    env: process.env.NODE_ENV || 'production' 
-  });
+  res.json({ ok:true, server_time: nowSeconds(), database: 'PostgreSQL' });
 });
 
-// ---------- Start Server ----------
-app.listen(PORT, () => {
-  console.log(`Key auth server listening on port ${PORT}`);
-  console.log(`DB: ${DB_PATH}`);
+// Start server
+initDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`✅ Key auth server (PostgreSQL) listening on port ${PORT}`);
+    console.log(`✅ Database: ${DATABASE_URL.split('@')[1]}`);
+  });
 });
