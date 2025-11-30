@@ -162,19 +162,26 @@ function parseKeyToken(token) {
     const expNum = Number(exp);
     if (!Number.isInteger(expNum) || expNum < 0) return null;
     
+    // Validate signature is valid hex
+    if (!/^[0-9a-fA-F]+$/.test(sig)) return null;
+    
     const payload = `${group}-${random}-${exp}`;
     const expected = hmacSign(payload);
     
     // FIXED: Proper signature comparison with same-length buffers
     let validSig = false;
     try {
-      if (sig.length === expected.length) {
-        validSig = crypto.timingSafeEqual(
-          Buffer.from(expected, 'hex'), 
-          Buffer.from(sig, 'hex')
-        );
+      if (sig.length === expected.length && sig.length === 64) {
+        const sigBuf = Buffer.from(sig, 'hex');
+        const expBuf = Buffer.from(expected, 'hex');
+        
+        // Ensure both buffers are 32 bytes (SHA256 output)
+        if (sigBuf.length === 32 && expBuf.length === 32) {
+          validSig = crypto.timingSafeEqual(sigBuf, expBuf);
+        }
       }
     } catch (e) {
+      console.error('Signature comparison error:', e);
       validSig = false;
     }
     
@@ -224,9 +231,13 @@ app.post('/validate', validateLimiter, (req, res) => {
     const ip = normalizeIP(req.ip || req.connection.remoteAddress);
     const certFp = req.headers[CERT_FP_HEADER] || null;
 
+    console.log(`[VALIDATE] Key: ${keyText}, HWID: ${hwid}, IP: ${ip}`);
+
     if (!keyText) return res.status(400).json({ ok: false, error: 'key required' });
 
     const parsed = parseKeyToken(keyText);
+    console.log('[VALIDATE] Parsed:', parsed);
+    
     if (!parsed || !parsed.validSig) {
       logEvent({ key_text: keyText, event: 'invalid_format', hwid, ip, cert_fp });
       return res.status(401).json({ ok: false, error: 'invalid signature or format' });
@@ -328,8 +339,12 @@ app.post('/validate', validateLimiter, (req, res) => {
 
     return res.json({ ok: true, message: 'valid', token: encrypted });
   } catch (err) {
-    console.error('validate error', err);
-    return res.status(500).json({ ok: false, error: 'server error' });
+    console.error('=== VALIDATE ERROR ===');
+    console.error('Error:', err);
+    console.error('Stack:', err.stack);
+    console.error('Request body:', req.body);
+    console.error('=====================');
+    return res.status(500).json({ ok: false, error: 'server error', details: process.env.NODE_ENV === 'development' ? err.message : undefined });
   }
 });
 
