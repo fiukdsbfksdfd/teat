@@ -94,9 +94,10 @@ const adminLimiter = rateLimit({
   }
 });
 
-// Ensure DB directory exists
 const dir = path.dirname(DB_PATH);
-if (!fs.existsSync(dir)) {
+
+// Only create directory if it’s not on Render persistent disk
+if (!process.env.RENDER && !fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true });
   console.log("Created missing DB directory:", dir);
 }
