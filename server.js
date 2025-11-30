@@ -63,6 +63,15 @@ const limiter = rateLimit({
   max: 50,
   message: { error: 'Too many requests, slow down.' }
 });
+const fs = require('fs');
+const path = require('path');
+
+// Ensure DB directory exists
+const dir = path.dirname(DB_PATH);
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+  console.log("Created missing DB directory:", dir);
+}
 
 const db = new Database(DB_PATH);
 
