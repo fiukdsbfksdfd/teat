@@ -326,18 +326,34 @@ app.post('/validate', validateLimiter, (req, res) => {
       }
     }
 
-    // Success
+    // Success - update bound_hwid if it was just bound
+    const currentRow = db.prepare('SELECT * FROM keys WHERE id = ?').get(row.id);
+    
     logEvent({ key_id: row.id, key_text: keyText, event: 'validated', hwid, ip, cert_fp });
 
     const payload = {
-      id: row.id,
-      group: row.group_name,
-      expires_at: row.expires_at,
+      id: currentRow.id,
+      group: currentRow.group_name,
+      expires_at: currentRow.expires_at,
+      bound_hwid: currentRow.bound_hwid,
       server_time: nowSeconds()
     };
     const encrypted = aesEncrypt(payload);
 
-    return res.json({ ok: true, message: 'valid', token: encrypted });
+    console.log('[VALIDATE SUCCESS]', { 
+      key_id: currentRow.id, 
+      group: currentRow.group_name,
+      hwid: currentRow.bound_hwid,
+      expires_at: currentRow.expires_at 
+    });
+
+    return res.json({ 
+      ok: true, 
+      message: 'valid', 
+      token: encrypted,
+      group: currentRow.group_name,
+      expires_at: currentRow.expires_at
+    });
   } catch (err) {
     console.error('=== VALIDATE ERROR ===');
     console.error('Error:', err);
