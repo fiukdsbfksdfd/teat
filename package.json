@@ -1,24 +1,23 @@
 {
   "name": "key-auth-server",
   "version": "1.0.0",
-  "description": "Key authentication server with cert checks, AES-256 encryption, HWID locks, IP checks and admin dashboard",
   "main": "server.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "NODE_ENV=development node server.js"
+    "start": "node server.js"
   },
-  "keywords": ["auth", "license", "hwid", "aes256", "express"],
-  "author": "",
-  "license": "MIT",
-"dependencies": {
-  "mongoose": "^7.4.0",
-  "express": "^4.18.2",
-  "body-parser": "^1.20.2",
-  "cors": "^2.8.5",
-  "helmet": "^6.0.1",
-  "morgan": "^1.10.0",
-  "uuid": "^9.0.0"
-}
-
-
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.8.0",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
+    "mongoose": "^7.5.0",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
