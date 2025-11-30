@@ -139,6 +139,22 @@ async function logEvent({ key_id=null, key_text=null, event, hwid=null, ip=null,
   }
 }
 
+// Helper to format key document for response
+function formatKeyResponse(doc) {
+  return {
+    id: doc._id.toString(),
+    key_text: doc.key_text,
+    group_name: doc.group_name,
+    created_at: doc.created_at,
+    expires_at: doc.expires_at,
+    bind_on_first_use: doc.bind_on_first_use,
+    bound_hwid: doc.bound_hwid || null,
+    allowed_ips: doc.allowed_ips || [],
+    allowed_cert_fps: doc.allowed_cert_fps || [],
+    extra: doc.extra || {}
+  };
+}
+
 // ---------- Express Setup ----------
 const app = express();
 app.set('trust proxy', true);
@@ -268,21 +284,99 @@ app.post('/admin/key/add', adminGuard, adminLimiter, async (req,res)=>{
     });
 
     await logEvent({ key_id:key._id, key_text:keyText, event:'created', ip:req.ip, cert_fp:req.headers[CERT_FP_HEADER]||null });
-    return res.json({ ok:true, key:keyText, id:key._id, group, expires_at:expires });
+    return res.json({ ok:true, key:keyText, id:key._id.toString(), group, expires_at:expires });
   }catch(err){ console.error(err); return res.status(500).json({ ok:false, error:'server error' }); }
 });
 
 app.post('/admin/key/remove', adminGuard, adminLimiter, async (req,res)=>{
-  const { key, id } = req.body || {};
-  if(!key && !id) return res.status(400).json({ ok:false, error:'key or id required' });
-  const row = id ? await Key.findById(id) : await Key.findOne({ key_text:key });
-  if(!row) return res.status(404).json({ ok:false, error:'not found' });
-  await Key.deleteOne({ _id: row._id });
-  await logEvent({ key_id:row._id, key_text:row.key_text, event:'deleted', ip:req.ip, cert_fp:req.headers[CERT_FP_HEADER]||null });
-  return res.json({ ok:true, deleted:row._id });
+  try {
+    const { key, id } = req.body || {};
+    if(!key && !id) return res.status(400).json({ ok:false, error:'key or id required' });
+    const row = id ? await Key.findById(id) : await Key.findOne({ key_text:key });
+    if(!row) return res.status(404).json({ ok:false, error:'not found' });
+    await Key.deleteOne({ _id: row._id });
+    await logEvent({ key_id:row._id, key_text:row.key_text, event:'deleted', ip:req.ip, cert_fp:req.headers[CERT_FP_HEADER]||null });
+    return res.json({ ok:true, deleted:row._id.toString() });
+  } catch(err) { 
+    console.error(err); 
+    return res.status(500).json({ ok:false, error:'server error' }); 
+  }
 });
 
-// Other admin endpoints (reset HWID, update, list keys) can be similarly migrated to MongoDB queries
+app.post('/admin/key/reset-hwid', adminGuard, adminLimiter, async (req,res)=>{
+  try {
+    const { key, id } = req.body || {};
+    if(!key && !id) return res.status(400).json({ ok:false, error:'key or id required' });
+    const row = id ? await Key.findById(id) : await Key.findOne({ key_text:key });
+    if(!row) return res.status(404).json({ ok:false, error:'not found' });
+    
+    row.bound_hwid = null;
+    await row.save();
+    
+    await logEvent({ key_id:row._id, key_text:row.key_text, event:'hwid_reset', ip:req.ip, cert_fp:req.headers[CERT_FP_HEADER]||null });
+    return res.json({ ok:true, message:'HWID reset', key_id:row._id.toString() });
+  } catch(err) { 
+    console.error(err); 
+    return res.status(500).json({ ok:false, error:'server error' }); 
+  }
+});
+
+app.post('/admin/key/update', adminGuard, adminLimiter, async (req,res)=>{
+  try {
+    const { id, allowedIps, allowedCertFPs, expiresAt, bindOnFirstUse } = req.body || {};
+    if(!id) return res.status(400).json({ ok:false, error:'id required' });
+    
+    const row = await Key.findById(id);
+    if(!row) return res.status(404).json({ ok:false, error:'not found' });
+    
+    if(allowedIps !== undefined) row.allowed_ips = allowedIps;
+    if(allowedCertFPs !== undefined) row.allowed_cert_fps = allowedCertFPs;
+    if(expiresAt !== undefined) row.expires_at = expiresAt;
+    if(bindOnFirstUse !== undefined) row.bind_on_first_use = bindOnFirstUse;
+    
+    await row.save();
+    await logEvent({ key_id:row._id, key_text:row.key_text, event:'updated', ip:req.ip, cert_fp:req.headers[CERT_FP_HEADER]||null });
+    
+    return res.json({ ok:true, message:'Key updated', key: formatKeyResponse(row) });
+  } catch(err) { 
+    console.error(err); 
+    return res.status(500).json({ ok:false, error:'server error' }); 
+  }
+});
+
+app.get('/admin/key/:id', adminGuard, adminLimiter, async (req,res)=>{
+  try {
+    const { id } = req.params;
+    const row = await Key.findById(id);
+    if(!row) return res.status(404).json({ ok:false, error:'not found' });
+    
+    return res.json({ ok:true, key: formatKeyResponse(row) });
+  } catch(err) { 
+    console.error(err); 
+    return res.status(500).json({ ok:false, error:'server error' }); 
+  }
+});
+
+app.get('/admin/keys', adminGuard, adminLimiter, async (req,res)=>{
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+    
+    const keys = await Key.find().skip(offset).limit(limit).sort({ created_at: -1 });
+    const total = await Key.countDocuments();
+    
+    return res.json({ 
+      ok:true, 
+      keys: keys.map(formatKeyResponse),
+      total,
+      limit,
+      offset
+    });
+  } catch(err) { 
+    console.error(err); 
+    return res.status(500).json({ ok:false, error:'server error' }); 
+  }
+});
 
 // ---------- Health Check ----------
 app.get('/', (req,res)=>{
